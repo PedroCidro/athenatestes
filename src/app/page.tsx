@@ -28,7 +28,7 @@ const projects = [
     title: "Coach de Powerlifting",
     category: "Esportes & Fitness",
     description: "Landing page de alta conversão para captação de alunos e apresentação de resultados.",
-    image: "/projects/powerlifting-coach.jpg", // You'll add this
+    image: "/projects/powerlifting-coach.jpg", // You'll add thisaaa
     placeholder: "bg-gradient-to-br from-amber-100 to-orange-50"
   }
 ];
@@ -37,7 +37,7 @@ export default function Home() {
   const [activeProject, setActiveProject] = useState(0);
 
   const whatsappNumber = "5516996100908"; // Replace with your number
-  const whatsappMessage = encodeURIComponent("Olá! Vi o site da Athena Studios e gostaria de saber mais sobre criação de sites.");
+  const whatsappMessage = encodeURIComponent("Olá! Vi o site da Athena Studios e gostaria de saber mais sobre o serviço de criação de sites.");
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
