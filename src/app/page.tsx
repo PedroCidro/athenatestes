@@ -18,23 +18,84 @@ const CheckIcon = () => (
 // Portfolio data - your real projects
 const projects = [
   {
+    title: "Dominato Barbell Club",
+    category: "Esportes & Fitness",
+    description: "Landing page moderna para academia de powerlifting com design impactante.",
+    image: "/dominato-barbell-club.png",
+    isLongScreenshot: true
+  },
+  {
     title: "Clínica Vheledos",
     category: "Saúde & Bem-estar",
     description: "Site institucional moderno com agendamento online e apresentação dos serviços.",
-    image: "/projects/clinica-vheledos.jpg", // You'll add this
-    placeholder: "bg-gradient-to-br from-emerald-100 to-teal-50"
-  },
-  {
-    title: "Coach de Powerlifting",
-    category: "Esportes & Fitness",
-    description: "Landing page de alta conversão para captação de alunos e apresentação de resultados.",
-    image: "/projects/powerlifting-coach.jpg", // You'll add thisaaa
-    placeholder: "bg-gradient-to-br from-amber-100 to-orange-50"
+    image: "/projects/clinica-vheledos.jpg",
+    placeholder: "bg-gradient-to-br from-emerald-100 to-teal-50",
+    isLongScreenshot: false
   }
 ];
 
 export default function Home() {
   const [activeProject, setActiveProject] = useState(0);
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>({});
+  const imageRefs = useRef<{ [key: number]: HTMLImageElement | null }>({});
+  const containerRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
+  const toggleCardExpand = (index: number) => {
+    setExpandedCards(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
+  const [scrollPosition, setScrollPosition] = useState<{ [key: number]: number }>({});
+
+  const getImageTranslation = (index: number): number => {
+    return -(scrollPosition[index] ?? 0);
+  };
+
+  // Use native event listener to prevent page scroll when hovering expanded cards
+  useEffect(() => {
+    const handleNativeWheel = (e: WheelEvent) => {
+      // Find which container the wheel event is on
+      for (const [indexStr, container] of Object.entries(containerRefs.current)) {
+        const index = parseInt(indexStr);
+        if (!container) continue;
+
+        const isHovered = hoveredCard === index;
+        const isExpanded = expandedCards.has(index);
+        const shouldExpand = isHovered || isExpanded;
+
+        if (shouldExpand && container.contains(e.target as Node)) {
+          e.preventDefault();
+
+          const img = imageRefs.current[index];
+          if (!img) return;
+
+          const imageHeight = img.naturalHeight * (container.clientWidth / img.naturalWidth);
+          const containerHeight = container.clientHeight;
+          const maxScroll = Math.max(0, imageHeight - containerHeight);
+
+          setScrollPosition(prev => {
+            const current = prev[index] ?? 0;
+            const delta = e.deltaY * 0.5;
+            const newPosition = Math.max(0, Math.min(maxScroll, current + delta));
+            return { ...prev, [index]: newPosition };
+          });
+          return;
+        }
+      }
+    };
+
+    window.addEventListener('wheel', handleNativeWheel, { passive: false });
+    return () => window.removeEventListener('wheel', handleNativeWheel);
+  }, [hoveredCard, expandedCards]);
 
   const whatsappNumber = "5516996100908"; // Replace with your number
   const whatsappMessage = encodeURIComponent("Olá! Vi o site da Athena Studios e gostaria de saber mais sobre o serviço de criação de sites.");
@@ -183,30 +244,71 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {projects.map((project, index) => (
-              <div
-                key={index}
-                className="group bg-cream rounded-2xl overflow-hidden border border-gold/10 hover:border-gold/30 transition-all hover:shadow-xl hover:shadow-gold/5"
-              >
-                {/* Project Image Placeholder */}
-                <div className="aspect-video flex items-center justify-center">
-                  <span className="text-charcoal-light/50 text-sm">Screenshot do projeto</span>
-                </div>
+            {projects.map((project, index) => {
+              const isExpanded = expandedCards.has(index);
+              const isHovered = hoveredCard === index;
+              const shouldExpand = isExpanded || isHovered;
 
-                {/* Project Info */}
-                <div className="p-6">
-                  <p className="text-gold text-xs font-medium tracking-widest uppercase mb-2">
-                    {project.category}
-                  </p>
-                  <h3 className="font-serif text-2xl font-semibold text-charcoal mb-2">
-                    {project.title}
-                  </h3>
-                  <p className="text-charcoal-light leading-relaxed">
-                    {project.description}
-                  </p>
+              return (
+                <div
+                  key={index}
+                  className="group bg-cream rounded-2xl overflow-hidden border border-gold/10 hover:border-gold/30 transition-all duration-500 hover:shadow-xl hover:shadow-gold/5"
+                >
+                  {/* Project Image with Waterfall Scroll Effect */}
+                  {project.isLongScreenshot ? (
+                    <div
+                      ref={(el) => { containerRefs.current[index] = el; }}
+                      className={`relative overflow-hidden cursor-pointer transition-all duration-500 ease-out ${shouldExpand ? 'h-[75vh]' : 'h-64'
+                        }`}
+                      onClick={() => toggleCardExpand(index)}
+                      onMouseEnter={() => setHoveredCard(index)}
+                      onMouseLeave={() => {
+                        setHoveredCard(null);
+                        setScrollPosition(prev => ({ ...prev, [index]: 0 }));
+                      }}
+                    >
+                      <img
+                        ref={(el) => { imageRefs.current[index] = el; }}
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-auto object-cover object-top transition-transform duration-150 ease-out"
+                        style={{
+                          transform: shouldExpand ? `translateY(${getImageTranslation(index)}px)` : 'translateY(0)'
+                        }}
+                        onLoad={() => setImageLoaded(prev => ({ ...prev, [index]: true }))}
+                      />
+                      {/* Gradient overlay at bottom */}
+                      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-cream via-cream/80 to-transparent pointer-events-none" />
+                    </div>
+                  ) : (
+                    <div className={`aspect-video flex items-center justify-center ${project.placeholder || ''}`}>
+                      {project.image ? (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-charcoal-light/50 text-sm">Screenshot do projeto</span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Project Info */}
+                  <div className="p-6">
+                    <p className="text-gold text-xs font-medium tracking-widest uppercase mb-2">
+                      {project.category}
+                    </p>
+                    <h3 className="font-serif text-2xl font-semibold text-charcoal mb-2">
+                      {project.title}
+                    </h3>
+                    <p className="text-charcoal-light leading-relaxed">
+                      {project.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -336,7 +438,7 @@ export default function Home() {
             <span className="font-serif text-lg font-semibold text-charcoal">Athena Studios</span>
           </div>
           <p className="text-charcoal-light text-sm">
-            © {new Date().getFullYear()} Athena Studios. Feito com dedicação em São Paulo.
+            © {new Date().getFullYear()} Athena Studios
           </p>
         </div>
       </footer>
