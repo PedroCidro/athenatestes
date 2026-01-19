@@ -437,7 +437,7 @@ export default function Home() {
             <span className="font-serif text-lg font-semibold text-charcoal">Athena Studios</span>
           </div>
           <p className="text-charcoal-light text-sm">
-            © {new Date().getFullYear()} Athena Studios
+            {new Date().getFullYear()} Athena Studios
           </p>
         </div>
       </footer>
