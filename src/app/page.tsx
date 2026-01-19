@@ -28,9 +28,8 @@ const projects = [
     title: "Clínica Vheledos",
     category: "Saúde & Bem-estar",
     description: "Site institucional moderno com agendamento online e apresentação dos serviços.",
-    image: "/projects/clinica-vheledos.jpg",
-    placeholder: "bg-gradient-to-br from-emerald-100 to-teal-50",
-    isLongScreenshot: false
+    image: "/Vheledos.png",
+    isLongScreenshot: true
   }
 ];
 
@@ -226,7 +225,7 @@ export default function Home() {
       <section id="portfolio" className="py-24 px-6 bg-cream-dark">
         <div
           ref={portfolioRef}
-          className={`max-w-6xl mx-auto rounded-3xl p-10 md:p-14 transition-all duration-700 ease-out ${portfolioVisible
+          className={`max-w-6xl mx-auto rounded-3xl p-10 md:p-14 transition-[opacity,transform] duration-700 ease-out ${portfolioVisible
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 translate-y-16'
             }`}
@@ -243,7 +242,7 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 items-start">
             {projects.map((project, index) => {
               const isExpanded = expandedCards.has(index);
               const isHovered = hoveredCard === index;
@@ -252,13 +251,13 @@ export default function Home() {
               return (
                 <div
                   key={index}
-                  className="group bg-cream rounded-2xl overflow-hidden border border-gold/10 hover:border-gold/30 transition-all duration-500 hover:shadow-xl hover:shadow-gold/5"
+                  className="bg-cream rounded-2xl overflow-hidden border border-gold/10 hover:border-gold/30 transition-[border-color,box-shadow] duration-300 hover:shadow-xl hover:shadow-gold/5"
                 >
                   {/* Project Image with Waterfall Scroll Effect */}
                   {project.isLongScreenshot ? (
                     <div
                       ref={(el) => { containerRefs.current[index] = el; }}
-                      className={`relative overflow-hidden cursor-pointer transition-all duration-500 ease-out ${shouldExpand ? 'h-[75vh]' : 'h-64'
+                      className={`relative overflow-hidden cursor-pointer transition-all duration-500 ease-out scrollbar-hide ${shouldExpand ? 'h-[75vh]' : 'h-96'
                         }`}
                       onClick={() => toggleCardExpand(index)}
                       onMouseEnter={() => setHoveredCard(index)}
@@ -281,7 +280,7 @@ export default function Home() {
                       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-cream via-cream/80 to-transparent pointer-events-none" />
                     </div>
                   ) : (
-                    <div className={`aspect-video flex items-center justify-center ${project.placeholder || ''}`}>
+                    <div className="aspect-video flex items-center justify-center bg-gradient-to-br from-cream-dark to-cream">
                       {project.image ? (
                         <img
                           src={project.image}
@@ -448,7 +447,8 @@ export default function Home() {
         href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 md:hidden bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-all hover:scale-110 z-50"
+        className="fixed bottom-6 right-6 md:hidden text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 z-50"
+        style={{ backgroundColor: '#909a87' }}
         aria-label="Conversar no WhatsApp"
       >
         <WhatsAppIcon className="w-7 h-7" />
