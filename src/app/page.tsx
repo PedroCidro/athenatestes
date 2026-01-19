@@ -395,8 +395,8 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 px-6 greek-pattern">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="py-24 px-6 greek-pattern relative">
+        <div className="max-w-3xl mx-auto text-center relative z-10">
           <Image
             src="/logo.png"
             alt="Athena Studios"
