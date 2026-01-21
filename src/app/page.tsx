@@ -143,7 +143,7 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md border-b border-gold/10">
         <div className="max-w-6xl mx-auto px-6 py-1 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-1 group">
+          <a href="#" className="flex items-center gap-0 group">
             <img
               src="/logo-icon.png"
               alt="Athena Studios"
@@ -152,10 +152,10 @@ export default function Home() {
             <img
               src="/athena_name.png"
               alt="Athena"
-              className="h-4 w-auto transition-transform group-hover:scale-110"
+              className="h-3.5 w-auto transition-transform group-hover:scale-110"
             />
           </a>
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             <a href="#portfolio" className="text-sm text-charcoal-light hover:text-charcoal transition-colors">Portfólio</a>
             <a href="#sobre" className="text-sm text-charcoal-light hover:text-charcoal transition-colors">Sobre</a>
             <a href="#preco" className="text-sm text-charcoal-light hover:text-charcoal transition-colors">Investimento</a>
